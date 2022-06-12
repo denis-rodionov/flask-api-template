@@ -9,10 +9,16 @@ and https://gist.github.com/arundhaj/5f4c0f8c9a8efba9f92f81adea9fd4d7
 ## Run
 ```
 pipenv install --dev
-FLASK_APP=app python3 -m flask run
+pipenv shell --anyway
+FLASK_APP=app python -m flask run
 ```
 
 ### Run Tests
 ```
-python3 -m pytest
+python -m pytest
+```
+
+### Linting
+```
+python -m pylint .
 ```
