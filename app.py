@@ -53,10 +53,3 @@ def create_app(config_object=AppConfig(), todo_service=TodoService()):
         app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
 
     return app
-
-
-#app = create_app(AppConfig())
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
