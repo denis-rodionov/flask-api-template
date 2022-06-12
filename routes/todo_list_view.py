@@ -3,6 +3,8 @@ from flask import request
 from flask.views import MethodView
 from marshmallow import Schema, fields
 
+from services.todo_service import TodoService
+
 
 class TodoSchema(Schema):
     title = fields.String(required=True)
@@ -14,7 +16,10 @@ class TodoListResponseSchema(Schema):
     todo_list = fields.List(fields.Nested(TodoSchema))
 
 
-class ToDoList(MethodView):
+class TodoListView(MethodView):
+    def __init__(self, todo_service: TodoService):
+        self.todo_service = todo_service
+
     def get(self):
         """
         ---
@@ -29,7 +34,7 @@ class ToDoList(MethodView):
                     application/json:
                         schema: TodoListResponseSchema
         """
-        return TodoListResponseSchema().dump({'todo_list': todo_list_data})
+        return TodoListResponseSchema().dump({'todo_list': self.todo_service.get_all()})
 
     def post(self):
         """
@@ -60,20 +65,6 @@ class ToDoList(MethodView):
         if errors:
             return { 'Data validation errors': errors }, 400
 
-        todo_list_data.append(data)
+        self.todo_service.add(data)
         return TodoSchema().dump(data), 201
-
-
-todo_list_data = [
-    {
-        'title': "Book a flight to Bali",
-        'description': "Find the cheapest and fastest flight in best-flights.net",
-        'done': False
-    },
-    {
-        'title': "Pack the luggage",
-        'description': "Write a list, pack the things in the suitcase",
-        'done': True
-    }
-]
 

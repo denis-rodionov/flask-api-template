@@ -7,11 +7,12 @@ from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 
 from config.app_config import AppConfig
-from routes.todo_list import ToDoList
+from routes.todo_list_view import TodoListView
+from services.todo_service import TodoService
 
 
-def create_app(config_object=AppConfig()):
-
+# TODO: consider IoC instead of multiple dependencies
+def create_app(config_object=AppConfig(), todo_service=TodoService()):
     app = Flask(__name__)
     CORS(app)
 
@@ -19,7 +20,7 @@ def create_app(config_object=AppConfig()):
     app.config.from_object(config_object)
 
     # Register Method Views
-    todo_list_view = ToDoList.as_view("todo_list")
+    todo_list_view = TodoListView.as_view("todo_list", todo_service=todo_service)
     app.add_url_rule("/todo", view_func=todo_list_view)
 
     if (app.config['SWAGGER']):
